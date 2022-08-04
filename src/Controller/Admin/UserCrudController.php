@@ -6,12 +6,14 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Form\GroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -27,6 +29,13 @@ class UserCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Students')
             ->showEntityActionsInlined('true')
             ->setSearchFields(['name', 'first_name', 'last_name', 'birthday']);
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(EntityFilter::new('groups'))
+            ->add('name');
     }
 
 
