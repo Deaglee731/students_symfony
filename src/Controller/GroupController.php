@@ -6,11 +6,13 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 #[Route('/group')]
 class GroupController extends AbstractController
@@ -29,7 +31,6 @@ class GroupController extends AbstractController
         $group = new Group();
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
-        $group->addUser($doctrine->getRepository(User::class)->find(1)); //
 
         if ($form->isSubmitted() && $form->isValid()) {
             $groupRepository->add($group, true);
@@ -44,11 +45,14 @@ class GroupController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_group_show', methods: ['GET'])]
-    public function show(Group $group): Response
+    public function show(Environment $twig, Group $group, ManagerRegistry $doctrine): Response
     {
-        return $this->render('group/show.html.twig', [
+        $users = $group->getUsers();
+
+        return new Response($twig->render('group/show.html.twig', [
             'group' => $group,
-        ]);
+            'users' => $users,
+        ]));
     }
 
     #[Route('/{id}/edit', name: 'app_group_edit', methods: ['GET', 'POST'])]
