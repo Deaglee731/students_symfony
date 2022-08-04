@@ -3,47 +3,49 @@
 {% block title %}Subject index{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col">
-                    <div class="d-flex justify-content-center">
-                        <h3>  Список студентов  </h3>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <div class="d-flex justify-content-center">
+                            <h3> Список студентов </h3>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th class="d-flex justify-content-center">actions</th>
+                    </tr>
+                    <tbody>
+                    {% for subject in subjects %}
+                        <tr>
+                            <td>{{ subject.id }}</td>
+                            <td>{{ subject.name }}</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-outline-secondary"
+                                       href="{{ path('app_subject_show', {'id': subject.id}) }}">Show</a>
+                                    <a class="btn btn-outline-secondary"
+                                       href="{{ path('app_subject_edit', {'id': subject.id}) }}">Edit</a>
+                                    {{ include('subject/_delete_form.html.twig') }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">no records found</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <tr>
-                    <th>id</th>
-                    <th>name</th>
-                    <th class="d-flex justify-content-center">actions</th>
-                </tr>
-                <tbody>
-        {% for subject in subjects %}
-            <tr>
-                <td>{{ subject.id }}</td>
-                <td>{{ subject.name }}</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <a class="btn btn-outline-secondary"
-                           href="{{ path('app_subject_show', {'id': subject.id}) }}">Show</a>
-                        <a class="btn btn-outline-secondary"
-                           href="{{ path('app_subject_edit', {'id': subject.id}) }}">Edit</a>
-                        {{ include('subject/_delete_form.html.twig') }}
-                    </div>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-            </table>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-outline-primary" href="{{ path('app_subject_new') }}">Create new</a>
         </div>
     </div>
-    <a href="{{ path('app_subject_new') }}">Create new</a>
-</div>
 {% endblock %}
