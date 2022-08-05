@@ -35,6 +35,9 @@ class User
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $avatar;
 
+    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: User::class)]
+    private $subjects;
+
     public function getId(): ?int
     {
         return $this->id;
