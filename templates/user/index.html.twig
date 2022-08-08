@@ -41,6 +41,10 @@
                                     <a class="btn btn-outline-secondary"
                                        href="{{ path('app_user_edit', {'id': user.id}) }}">Edit</a>
                                     {{ include('user/_delete_form.html.twig') }}
+                                    <a class="btn btn-outline-success"
+                                       href="{{ path('app_score_new', {'user': user.id}) }}">
+                                        Add score
+                                    </a>
                                 </div>
                             </td>
                         </tr>

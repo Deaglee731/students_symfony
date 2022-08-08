@@ -45,14 +45,14 @@ class GroupController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_group_show', methods: ['GET'])]
-    public function show(Environment $twig, Group $group, ManagerRegistry $doctrine): Response
+    public function show(Group $group, ManagerRegistry $doctrine): Response
     {
         $users = $group->getUsers();
 
-        return new Response($twig->render('group/show.html.twig', [
+        return $this->render('group/show.html.twig', [
             'group' => $group,
             'users' => $users,
-        ]));
+        ]);
     }
 
     #[Route('/{id}/edit', name: 'app_group_edit', methods: ['GET', 'POST'])]
