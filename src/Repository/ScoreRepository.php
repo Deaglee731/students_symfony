@@ -41,9 +41,11 @@ class ScoreRepository extends ServiceEntityRepository
 
     public function findByUser($user)
     {
-        /* TODO create query*/
-        return $this->createQueryBuilder('score')
-            ->where("score.user_id = $user")
+        return $this->createQueryBuilder('s')
+            ->where("s.user = :val")
+            ->setParameter('val', $user)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

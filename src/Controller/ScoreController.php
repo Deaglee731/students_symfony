@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Group;
 use App\Entity\Score;
+use App\Entity\Subject;
 use App\Entity\User;
 use App\Form\ScoreType;
 use App\Repository\ScoreRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,15 +28,14 @@ class ScoreController extends AbstractController
     #[Route('/', name: 'app_score_index', methods: ['GET'])]
     public function index(User $user, ScoreRepository $scoreRepository): Response
     {
-        dd($scoreRepository->findByUser($user));
         return $this->render('score/index.html.twig', [
             'user' => $user,
-            'scores' => $scoreRepository->findAll(),
+            'scores' => $scoreRepository->findByUser($user),
         ]);
     }
 
     #[Route('/new', name: 'app_score_new', methods: ['GET', 'POST'])]
-    public function new(User $user, Request $request, ScoreRepository $scoreRepository): Response
+    public function new(User $user, Request $request, ScoreRepository $scoreRepository, ManagerRegistry $doctrine): Response
     {
         $score = new Score();
         $score->setUser($user);
@@ -58,6 +60,8 @@ class ScoreController extends AbstractController
     #[Route('/{id}/edit', name: 'app_score_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request,User $user, Score $score, ScoreRepository $scoreRepository): Response
     {
+        $score->setUser($user);
+
         $form = $this->createForm(ScoreType::class, $score);
         $score->setSubject($score->getSubject());
 
