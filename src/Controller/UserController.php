@@ -17,17 +17,12 @@ use Twig\Environment;
 #[Route('/user')]
 class UserController extends AbstractController
 {
-    public $twig;
-
-    public function __construct(Environment $twig) {
-        $this->twig = $twig;
-    }
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Environment $twig, UserRepository $userRepository): Response
     {
-        return new Response($twig->render('user/index.html.twig', [
+        return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
-        ]));
+        ]);
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
@@ -51,10 +46,10 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return new Response($this->twig->render('user/new.html.twig', [
+        return $this->renderForm('user/new.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
-        ]));
+            'form' => $form,
+        ]);
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
@@ -86,10 +81,10 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return new Response($this->twig->render('user/edit.html.twig', [
+        return $this->renderForm('user/edit.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
-        ]));
+            'form' => $form,
+        ]);
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
