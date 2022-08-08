@@ -39,6 +39,15 @@ class ScoreRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByUser($user)
+    {
+        return $this->createQueryBuilder('s')
+            ->where("s.user = :val")
+            ->setParameter('val', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Score[] Returns an array of Score objects
 //     */
