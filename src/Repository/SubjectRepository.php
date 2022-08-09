@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Score;
 use App\Entity\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +40,33 @@ class SubjectRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findSubjectsWithoutScoreByUser($user)
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addEntityResult(Subject::class, $alias = 'subject');
+        $rsm->addFieldResult($alias, 'id', 'id');
+
+        $query = $this
+            ->_em
+            ->createNativeQuery(
+                sql: <<<SQL
+                    SELECT
+                        s.id
+                    FROM
+                        subject s
+                    WHERE
+                        s.id NOT IN (SELECT subject_id FROM score s2 WHERE s2.user_id = :val)
+                    SQL,
+                rsm: $rsm
+            );
+
+        $query->setParameter('val', $user);
+
+        $result = $query->getResult();
+
+        return $result;
     }
 
 //    /**

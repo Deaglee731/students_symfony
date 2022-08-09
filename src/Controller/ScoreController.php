@@ -39,6 +39,7 @@ class ScoreController extends AbstractController
     {
         $score = new Score();
         $score->setUser($user);
+        $subjects = $doctrine->getRepository(Subject::class)->findSubjectsWithoutScoreByUser($user);
 
         $form = $this->createForm(ScoreType::class, $score);
 
@@ -52,6 +53,7 @@ class ScoreController extends AbstractController
 
         return $this->renderForm('score/new.html.twig', [
             'score' => $score,
+            'subject' => $subjects,
             'user' => $user,
             'form' => $form,
         ]);
