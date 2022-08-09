@@ -13,7 +13,9 @@ class ScoreType extends AbstractType
     {
         $builder
             ->add('score')
-            ->add('subject')
+            ->add('subject', null,
+                ['choices' => $options['subject']]
+            )
         ;
     }
 

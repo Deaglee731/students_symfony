@@ -41,7 +41,9 @@ class ScoreController extends AbstractController
         $score->setUser($user);
         $subjects = $doctrine->getRepository(Subject::class)->findSubjectsWithoutScoreByUser($user);
 
-        $form = $this->createForm(ScoreType::class, $score);
+        $form = $this->createForm(ScoreType::class, $score, [
+            'subject' => $subjects,
+        ]);
 
         $form->handleRequest($request);
 
