@@ -66,7 +66,9 @@ class ScoreController extends AbstractController
     {
         $score->setUser($user);
 
-        $form = $this->createForm(ScoreType::class, $score);
+        $form = $this->createForm(ScoreType::class, $score, [
+            'subject' => array($score->getSubject())
+        ]);
         $score->setSubject($score->getSubject());
 
         $form->handleRequest($request);
