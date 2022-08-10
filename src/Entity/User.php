@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -37,6 +39,30 @@ class User
 
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: "user")]
     private $subjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class)]
+    private $scores;
+
+    public function __construct()
+    {
+        $this->scores = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubjects()
+    {
+        return $this->subjects;
+    }
+
+    /**
+     * @param mixed $subjects
+     */
+    public function setSubjects($subjects): void
+    {
+        $this->subjects = $subjects;
+    }
 
     public function getId(): ?int
     {
@@ -127,8 +153,43 @@ class User
         return $this;
     }
 
+    public function getFullName()
+    {
+        return $this->getName() . " ". $this->getFirstName();
+    }
+
     public function __toString(): string
     {
         return (string) $this->getGroups();
+    }
+
+    /**
+     * @return Collection<int, Score>
+     */
+    public function getScores(): Collection
+    {
+        return $this->scores;
+    }
+
+    public function addScore(Score $score): self
+    {
+        if (!$this->scores->contains($score)) {
+            $this->scores[] = $score;
+            $score->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScore(Score $score): self
+    {
+        if ($this->scores->removeElement($score)) {
+            // set the owning side to null (unless already changed)
+            if ($score->getUser() === $this) {
+                $score->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

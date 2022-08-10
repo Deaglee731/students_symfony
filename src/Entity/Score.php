@@ -16,13 +16,13 @@ class Score
     #[ORM\Column(type: 'integer', nullable: true)]
     private $score;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'user')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user;
-
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'subject')]
     #[ORM\JoinColumn(nullable: false)]
     private $subject;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'scores')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $user;
 
     /**
      * @return mixed
@@ -71,5 +71,10 @@ class Score
         $this->score = $score;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->score ?? "-";
     }
 }
