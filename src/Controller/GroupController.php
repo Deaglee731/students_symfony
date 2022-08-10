@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\Subject;
 use App\Entity\User;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use App\Repository\UserRepository;
+use App\Services\JournalService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +19,13 @@ use Twig\Environment;
 #[Route('/group')]
 class GroupController extends AbstractController
 {
+    public $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     #[Route('/', name: 'app_group_index', methods: ['GET'])]
     public function index(GroupRepository $groupRepository): Response
     {
@@ -81,5 +90,18 @@ class GroupController extends AbstractController
         }
 
         return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/showJournal', name: 'app_group_showjournal', methods: ['GET'])]
+    public function showJournal(Group $group, GroupRepository $groupRepository, JournalService $journalService)
+    {
+        $allStudentScoresList = $journalService->getJournalALLStudents($group);
+        $subjects = $this->doctrine->getRepository(Subject::class)->findAll();
+
+        return $this->render('group/journal.html.twig',[
+            'group' => $group,
+            'allStudentScoresList' => $allStudentScoresList,
+            'subjects' => $subjects,
+        ]);
     }
 }

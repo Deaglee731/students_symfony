@@ -16,9 +16,6 @@ class Subject
     #[ORM\Column(type: 'string', length: 25)]
     private $name;
 
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: Subject::class)]
-    private $user;
-
     public function getId(): ?int
     {
         return $this->id;
