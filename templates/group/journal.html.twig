@@ -24,7 +24,14 @@
                         {% endfor %}
                     <tr>
                     <tbody>
-                        //TODO foreach for StudentsScores
+                        {% for key, studentScore in allStudentScoresList %}
+                        <tr>
+                            <td> {{ key }}</td>
+                            {% for student in studentScore %}
+                            <th> {{ student }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

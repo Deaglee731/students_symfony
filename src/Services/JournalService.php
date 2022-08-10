@@ -29,7 +29,7 @@ class JournalService
             foreach ($subjects as $subject)
             {
                 if(!$user->getScores()->exists(function ($key, Score $score) use ($subject){
-                    return $score->getSubject()?->getId() == $subject->getId();
+                    return $score->getSubject() === $subject;
                 }))
                 {
                     $score = new Score();

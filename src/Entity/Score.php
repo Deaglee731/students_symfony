@@ -75,6 +75,6 @@ class Score
 
     public function __toString()
     {
-        return $this->score;
+        return $this->score ?? "-";
     }
 }
