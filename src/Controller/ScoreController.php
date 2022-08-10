@@ -62,11 +62,13 @@ class ScoreController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_score_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request,User $user, Score $score, ScoreRepository $scoreRepository): Response
+    public function edit(Request $request,User $user, Score $score, ScoreRepository $scoreRepository, ManagerRegistry $doctrine): Response
     {
         $score->setUser($user);
 
-        $form = $this->createForm(ScoreType::class, $score);
+        $form = $this->createForm(ScoreType::class, $score,[
+            'subject' => $score->getSubject(), /* TODO FIX BUG */
+        ]);
         $score->setSubject($score->getSubject());
 
         $form->handleRequest($request);
