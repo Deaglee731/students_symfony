@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Group;
 use App\Entity\Score;
 use App\Entity\Subject;
 use App\Entity\User;
@@ -39,6 +38,7 @@ class ScoreController extends AbstractController
     {
         $score = new Score();
         $score->setUser($user);
+
         $subjects = $doctrine->getRepository(Subject::class)->findSubjectsWithoutScoreByUser($user);
 
         $form = $this->createForm(ScoreType::class, $score, [
@@ -66,9 +66,7 @@ class ScoreController extends AbstractController
     {
         $score->setUser($user);
 
-        $form = $this->createForm(ScoreType::class, $score,[
-            'subject' => $score->getSubject(), /* TODO FIX BUG */
-        ]);
+        $form = $this->createForm(ScoreType::class, $score);
         $score->setSubject($score->getSubject());
 
         $form->handleRequest($request);
