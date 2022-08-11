@@ -97,14 +97,15 @@ class GroupController extends AbstractController
     public function showJournal(Group $group, GroupRepository $groupRepository, JournalService $journalService)
     {
         $allStudentScoresList = $journalService->getJournalALLStudents($group);
-        $averageScores = $journalService->getAvrageScoreForStudents($group);
+        $avgScores = $journalService->getAvrageScoreForStudents($group);
         $subjects = $this->doctrine->getRepository(Subject::class)->findAll();
+        $badStudents = $this->doctrine->getRepository(User::class)->getBadStudents();
+        $goodStudents = $this->doctrine->getRepository(User::class)->getGoodStudents(); ;
+        $bestStudents = $this->doctrine->getRepository(User::class)->getBestStudents();
 
-        return $this->render('group/journal.html.twig',[
-            'group' => $group,
-            'allStudentScoresList' => $allStudentScoresList,
-            'avgScores' => $averageScores,
-            'subjects' => $subjects,
-        ]);
+        return $this->render('group/journal.html.twig',
+            compact(
+                'group', 'allStudentScoresList', 'avgScores', 'subjects',
+                'badStudents', 'goodStudents', 'bestStudents'));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Score;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,6 +39,89 @@ class UserRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function getBadStudents()
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addEntityResult(User::class, $alias = 'user');
+        $rsm->addFieldResult($alias, 'id', 'id');
+
+        $query = $this
+            ->_em
+            ->createNativeQuery(
+                sql: <<<SQL
+                    SELECT
+                        u.id
+                    FROM
+                        user u 
+                    JOIN score s 
+                    ON u.id = s.user_id
+                    GROUP BY user_id
+                    HAVING MIN(score) <= 3
+                    SQL,
+                rsm: $rsm
+            );
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function getGoodStudents()
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addEntityResult(User::class, $alias = 'user');
+        $rsm->addFieldResult($alias, 'id', 'id');
+
+        $query = $this
+            ->_em
+            ->createNativeQuery(
+                sql: <<<SQL
+                    SELECT
+                        u.id
+                    FROM
+                        user u 
+                    JOIN score s 
+                    ON u.id = s.user_id
+                    GROUP BY user_id
+                    HAVING MIN(score) = 4
+                    SQL,
+                rsm: $rsm
+            );
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function getBestStudents()
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addEntityResult(User::class, $alias = 'user');
+        $rsm->addFieldResult($alias, 'id', 'id');
+
+        $query = $this
+            ->_em
+            ->createNativeQuery(
+                sql: <<<SQL
+                    SELECT
+                        u.id
+                    FROM
+                        user u 
+                    JOIN score s 
+                    ON u.id = s.user_id
+                    GROUP BY user_id
+                    HAVING MIN(score) = 5
+                    SQL,
+                rsm: $rsm
+            );
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+
 
 //    /**
 //     * @return User[] Returns an array of User objects
