@@ -44,6 +44,10 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class)]
     private $scores;
 
+    public const COLOR_GREEN = 'green';
+    public const COLOR_YELLOW = 'yellow';
+    public const COLOR_RED = 'red';
+
     public function __construct()
     {
         $this->scores = new ArrayCollection();
@@ -156,12 +160,12 @@ class User
 
     public function getFullName()
     {
-        return $this->getName() . " ". $this->getFirstName();
+        return $this->getName() . " " . $this->getFirstName();
     }
 
     public function __toString(): string
     {
-        return (string) $this->getGroups();
+        return (string)$this->getFullName();
     }
 
     /**
@@ -192,5 +196,19 @@ class User
         }
 
         return $this;
+    }
+
+    public function getColor()
+    {
+        $scores = new ArrayCollection($this->getScores()->getValues());
+        $min = 100;
+
+        $scores->map(function ($value) use (&$min) {
+            if ($value->getScore() != null &&$value->getScore() <= $min) {
+                return $min = $value->getScore();
+            }
+        });
+
+        return ($min == 5 ? User::COLOR_GREEN : ($min == 4 ? User::COLOR_YELLOW : User::COLOR_RED));
     }
 }

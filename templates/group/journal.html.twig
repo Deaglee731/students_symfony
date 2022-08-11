@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="d-flex justify-content-center">
-                            <h3>  Список группы с оценками  </h3>
+                            <h3> Список группы с оценками </h3>
                         </div>
                     </div>
                 </div>
@@ -23,16 +23,22 @@
                             <th scope="col"> {{ subject.name }} </th>
                         {% endfor %}
                     <tr>
-                    <tbody>
-                        {% for key, studentScore in allStudentScoresList %}
-                        <tr>
-                            <td> {{ key }}</td>
-                            {% for student in studentScore %}
-                            <th> {{ student }}</th>
-                            {% endfor %}
-                        </tr>
+                        <tbody>
+                        {% for studentScores in allStudentScoresList %}
+                            <tr style="background-color: {{ studentScores.color }}">
+                                <td> {{ studentScores.name }}</td>
+                                {% for score in studentScores.scores %}
+                                    <th> {{ score.getScore() ?? '-'}}</th>
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
-                    </tbody>
+                        <tr>
+                            <th>Средний бал</th>
+                            {% for subject in subjects %}
+                                <th scope="col"> {{ subject.getAverageScores() }} </th>
+                            {% endfor %}
+                        <tr>
+                        </tbody>
                 </table>
             </div>
         </div>
