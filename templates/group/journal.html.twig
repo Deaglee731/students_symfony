@@ -34,8 +34,8 @@
                         {% endfor %}
                         <tr>
                             <th>Средний бал</th>
-                            {% for subject in subjects %}
-                                <th scope="col"> {{ subject.getAverageScores() }} </th>
+                            {% for score in avgScores %}
+                                <th scope="col"> {{ score }} </th>
                             {% endfor %}
                         <tr>
                         </tbody>

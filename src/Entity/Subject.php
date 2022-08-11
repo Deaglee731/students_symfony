@@ -57,17 +57,4 @@ class Subject
     {
         return $this->id;
     }
-
-    public function getAverageScores()
-    {
-        $scores = new ArrayCollection($this->getScores()->getValues());
-        $sumAllScore = 0;
-
-        $scores->map(function ($value) use (&$sumAllScore){
-            $score = $value->getScore();
-            $sumAllScore +=$score;
-        });
-
-        return count($scores) == 0 ? 0 : $sumAllScore/count($scores);
-    }
 }

@@ -9,6 +9,7 @@ use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use App\Repository\UserRepository;
 use App\Services\JournalService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,15 +93,17 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/showJournal', name: 'app_group_showjournal', methods: ['GET'])]
+    #[Route('/{id}/showJournal', name: 'app_group_showJournal', methods: ['GET'])]
     public function showJournal(Group $group, GroupRepository $groupRepository, JournalService $journalService)
     {
         $allStudentScoresList = $journalService->getJournalALLStudents($group);
+        $averageScores = $journalService->getAvrageScoreForStudents($group);
         $subjects = $this->doctrine->getRepository(Subject::class)->findAll();
 
         return $this->render('group/journal.html.twig',[
             'group' => $group,
             'allStudentScoresList' => $allStudentScoresList,
+            'avgScores' => $averageScores,
             'subjects' => $subjects,
         ]);
     }
