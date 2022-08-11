@@ -31,6 +31,8 @@
                                 <div class="d-flex justify-content-center">
                                     <a class="btn btn-outline-secondary"
                                        href="{{ path('app_group_show', {'id': group.id}) }}">Show</a>
+                                    <a class="btn btn-outline-success"
+                                       href="{{ path('app_group_showJournal', {'id': group.id}) }}">Show Journal</a>
                                     <a class="btn btn-outline-secondary"
                                        href="{{ path('app_group_edit', {'id': group.id}) }}">Edit</a>
                                     {{ include('group/_delete_form.html.twig') }}
