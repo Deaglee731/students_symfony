@@ -28,12 +28,12 @@
                             <tr style="background-color: {{ studentScores.color }}">
                                 <td> {{ studentScores.name }}</td>
                                 {% for score in studentScores.scores %}
-                                    <th> {{ score.getScore() ?? '-'}}</th>
+                                    <th> {{ score.getScore() ?? '-' }}</th>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
                         <tr>
-                            <th>Средний бал</th>
+                            {% if avgScores is not empty %}<th>Средний бал</th> {% endif %}
                             {% for score in avgScores %}
                                 <th scope="col"> {{ score }} </th>
                             {% endfor %}
@@ -51,9 +51,9 @@
                         <div class="col">
                             Имя
                         </div>
-                           <div class="col">
-                               Фамилия
-                           </div>
+                        <div class="col">
+                            Фамилия
+                        </div>
                         <div class="col">
                             Группа
                         </div>
