@@ -9,6 +9,9 @@
 .idea/
 /var/
 /vendor/
+.idea/php.xml
+symfony.lock
+composer.lock
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
