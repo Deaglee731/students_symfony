@@ -42,8 +42,63 @@
                 </table>
             </div>
         </div>
-        <div class="d-flex justify-content-end">
-            <a class="btn btn-outline-primary" href="{{ path('app_group_new') }}">Create new</a>
+        <div class="card">
+            <div class="card-header d-flex justify-content-center">Ударники</div>
+            <div class="card-body">
+                <table class="table-striped">
+                    <thead title="Отличники">
+                    <div class="row">
+                        <div class="col">
+                            Имя
+                        </div>
+                           <div class="col">
+                               Фамилия
+                           </div>
+                        <div class="col">
+                            Группа
+                        </div>
+                    </div>
+                    </thead>
+                    <tbody>
+                    {% for student in goodStudents %}
+                        <div class="row">
+                            <div class="col"> {{ student.name }}</div>
+                            <div class="col"> {{ student.FirstName }}</div>
+                            <div class="col"> {{ student.getGroups() }}</div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header d-flex justify-content-center">Отличники</div>
+            <div class="card-body">
+                <table class="table-bordered">
+                    <thead title="Отличники">
+                    <div class="row">
+                        <div class="col">
+                            Имя
+                        </div>
+                        <div class="col">
+                            Фамилия
+                        </div>
+                        <div class="col">
+                            Группа
+                        </div>
+                    </div>
+                    </thead>
+                    <tbody>
+                    {% for student in bestStudents %}
+                        <div class="row">
+                            <div class="col"> {{ student.name }}</div>
+                            <div class="col"> {{ student.FirstName }}</div>
+                            <div class="col"> {{ student.getGroups() }}</div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
