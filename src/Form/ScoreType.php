@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Score;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ScoreType extends AbstractType
@@ -23,7 +25,7 @@ class ScoreType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'subject' => false,
+            'subject' => [],
             'data_class' => Score::class,
         ]);
     }
