@@ -57,6 +57,14 @@
                     {% endfor %}
                 </table>
             </div>
+            <div class="d-flex justify-content-center">
+            {% if previous >= 0 %}
+                <a href="{{ path('app_user_index', { offset: previous }) }}">Previous</a>
+            {% endif %}
+            {% if next < users|length %}
+                <a href="{{ path('app_user_index', { offset: next }) }}">Next</a>
+            {% endif %}
+            </div>
         </div>
         <div class="d-flex justify-content-end">
             <a class="btn btn-outline-primary" href="{{ path('app_user_new') }}">Create new</a>
