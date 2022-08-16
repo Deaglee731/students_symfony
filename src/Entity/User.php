@@ -220,6 +220,11 @@ class User
         return $this->address;
     }
 
+    public function getAddresString(): ?string
+    {
+        return "Город {$this->getAddress()['city']} ". "Улица {$this->getAddress()['street']} ". "Дом {$this->getAddress()['home']}";
+    }
+
     public function setAddress(?array $address): self
     {
         $this->address = $address;
