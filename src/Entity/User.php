@@ -226,4 +226,9 @@ class User
 
         return $this;
     }
+
+    public function getFullAddress(): string
+    {
+        return " Город " . $this->getAddress()['city'] ."\n" . " Улица " . $this->getAddress()['street'] . " Дом ". $this->getAddress()['home'];
+    }
 }
