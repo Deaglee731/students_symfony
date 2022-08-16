@@ -44,6 +44,7 @@ class UserType extends AbstractType
                 'choice_label' => 'name',
                 'required' => true,
             ])
+            ->add('address', J)
             ->add('avatar', FileType::class, [
                 'label' => 'avatar',
                 'required' => false,

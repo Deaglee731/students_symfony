@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Score;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 2;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -65,6 +68,17 @@ class UserRepository extends ServiceEntityRepository
         $result = $query->getResult();
 
         return $result;
+    }
+
+    public function getUserPaginator(int $offset): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+
+        return new Paginator($query);
     }
 
     public function getGoodStudents()

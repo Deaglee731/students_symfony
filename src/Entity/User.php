@@ -44,6 +44,9 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class)]
     private $scores;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private $address = [];
+
     public const COLOR_GREEN = 'green';
     public const COLOR_YELLOW = 'yellow';
     public const COLOR_RED = 'red';
@@ -210,5 +213,17 @@ class User
         });
 
         return ($min == 5 ? User::COLOR_GREEN : ($min == 4 ? User::COLOR_YELLOW : User::COLOR_RED));
+    }
+
+    public function getAddress(): ?array
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?array $address): self
+    {
+        $this->address = $address;
+
+        return $this;
     }
 }

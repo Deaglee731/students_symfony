@@ -18,10 +18,14 @@ use Twig\Environment;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(Environment $twig, UserRepository $userRepository): Response
+    public function index(Request $request, Environment $twig, UserRepository $userRepository): Response
     {
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $paginator = $userRepository->getUserPaginator($offset);
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $paginator,
+            'previous' => $offset - UserRepository::PAGINATOR_PER_PAGE,
+            'next' => min(count($paginator), $offset + UserRepository::PAGINATOR_PER_PAGE),
         ]);
     }
 
