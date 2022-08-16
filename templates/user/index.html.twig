@@ -13,6 +13,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <form action="{{ path('app_user_index') }}" method="GET">
+                        <div class="row">
+                            <div class="col">
+                                <label for="first_name_filter"> first_name </label>
+                                <input id="first_name_filter" type="text" name="first_name">
+                            </div>
+                            <div class="col">
+                                <label for="last_name_filter"> last_name </label>
+                                <input id="last_name_filter" type="text" name="last_name">
+                            </div>
+                            <div class="col">
+                                <label for="group_filter"> group </label>
+                                <input id="group_filter" type="text" name="group_id">
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success"> Filter </button>
+                                <a href="{{ path('app_user_index') }}" class="btn btn-warning"> Remove filters</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="card-body d-flex">
                 <table class="table table-striped">

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Score;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -70,17 +71,6 @@ class UserRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function getUserPaginator(int $offset): Paginator
-    {
-        $query = $this->createQueryBuilder('c')
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult($offset)
-            ->getQuery()
-        ;
-
-        return new Paginator($query);
-    }
-
     public function getGoodStudents()
     {
         $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
@@ -134,6 +124,39 @@ class UserRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function getUserPaginator(int $offset, $filteredquery): Paginator
+    {
+        $filteredquery
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+
+        return new Paginator($filteredquery);
+    }
+
+    public function findByField($request)
+    {
+        $result = $this->createQueryBuilder('u');
+
+        if ($request->query->has('first_name')) {
+            $result->andWhere("first_name LIKE %:first_name%")
+                ->setParameter('first_name', $request->query->get('first_name'));
+        }
+        if ($request->query->has('last_name')) {
+            $result->andWhere("last_name LIKE %:last_name%")
+                ->setParameter('last_name', $request->query->get('last_name'));
+        }
+
+        if ($request->query->has('group_id')) {
+            $result->andWhere("group_id LIKE %:group%")
+                ->setParameter('group', $request->query->get('group_id'));
+        }
+
+        return $result;
+    }
+
 
 
 

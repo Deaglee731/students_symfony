@@ -21,7 +21,11 @@ class UserController extends AbstractController
     public function index(Request $request, Environment $twig, UserRepository $userRepository): Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
-        $paginator = $userRepository->getUserPaginator($offset);
+
+        $filteredquery = $userRepository->findByField($request);
+
+        $paginator = $userRepository->getUserPaginator($offset, $filteredquery);
+
         return $this->render('user/index.html.twig', [
             'users' => $paginator,
             'previous' => $offset - UserRepository::PAGINATOR_PER_PAGE,
