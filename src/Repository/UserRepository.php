@@ -140,18 +140,22 @@ class UserRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('u');
 
+        if ($request->query->has('name')) {
+            $result->andWhere("u.name LIKE :name")
+                ->setParameter('name', "%" . $request->query->get('name') . "%");
+        }
         if ($request->query->has('first_name')) {
-            $result->andWhere("first_name LIKE %:first_name%")
-                ->setParameter('first_name', $request->query->get('first_name'));
+            $result->andWhere("u.first_name LIKE :first_name")
+                ->setParameter('first_name', "%" . $request->query->get('first_name') . "%");
         }
         if ($request->query->has('last_name')) {
-            $result->andWhere("last_name LIKE %:last_name%")
-                ->setParameter('last_name', $request->query->get('last_name'));
+            $result->andWhere("u.last_name LIKE :last_name")
+                ->setParameter('last_name', "%" . $request->query->get('last_name') . "%");
         }
 
-        if ($request->query->has('group_id')) {
-            $result->andWhere("group_id LIKE %:group%")
-                ->setParameter('group', $request->query->get('group_id'));
+        if ($request->query->has('birthday')) {
+            $result->andWhere("u.birthday LIKE :birthday")
+                ->setParameter('birthday', "%" . $request->query->get('birthday') . "%");
         }
 
         return $result;

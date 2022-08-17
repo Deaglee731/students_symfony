@@ -17,16 +17,20 @@
                     <form action="{{ path('app_user_index') }}" method="GET">
                         <div class="row">
                             <div class="col">
+                                <label for="name_filter"> name </label>
+                                <input id="name_filter" type="text" name="name" value="{{ request.query.get('name') }}">
+                            </div>
+                            <div class="col">
                                 <label for="first_name_filter"> first_name </label>
-                                <input id="first_name_filter" type="text" name="first_name">
+                                <input id="first_name_filter" type="text" name="first_name" value="{{ request.query.get('first_name') }}">
                             </div>
                             <div class="col">
                                 <label for="last_name_filter"> last_name </label>
-                                <input id="last_name_filter" type="text" name="last_name">
+                                <input id="last_name_filter" type="text" name="last_name" value="{{ request.query.get('last_name') }}">
                             </div>
                             <div class="col">
-                                <label for="group_filter"> group </label>
-                                <input id="group_filter" type="text" name="group_id">
+                                <label for="birhtday_filter"> birthday </label>
+                                <input id="birhtday_filter" type="date" name="birthday" value="{{ request.query.get('birthday') }}">
                             </div>
                             <div class="col">
                                 <button class="btn btn-success"> Filter </button>
@@ -80,12 +84,19 @@
                 </table>
             </div>
             <div class="d-flex justify-content-center">
-            {% if previous >= 0 %}
-                <a href="{{ path('app_user_index', { offset: previous }) }}">Previous</a>
-            {% endif %}
-            {% if next < users|length %}
-                <a href="{{ path('app_user_index', { offset: next }) }}">Next</a>
-            {% endif %}
+                {% if previous >= 0 %}
+                    <a href="{{ path('app_user_index', { offset: previous,
+                        name: request.query.get('name'),
+                        firstname: request.query.get('first_name'),
+                        birthday: request.query.get('birthday')
+                    }) }}">Previous</a>
+                {% endif %}
+                {% if next < users|length %}
+                    <a href="{{ path('app_user_index', { offset: next, name: request.query.get('name'),
+                        firstname: request.query.get('first_name'),
+                        birthday: request.query.get('birthday')
+                    }) }}">Next</a>
+                {% endif %}
             </div>
         </div>
         <div class="d-flex justify-content-end">

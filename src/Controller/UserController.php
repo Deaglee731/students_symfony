@@ -30,6 +30,7 @@ class UserController extends AbstractController
             'users' => $paginator,
             'previous' => $offset - UserRepository::PAGINATOR_PER_PAGE,
             'next' => min(count($paginator), $offset + UserRepository::PAGINATOR_PER_PAGE),
+            'request' => $request,
         ]);
     }
 
