@@ -20,26 +20,28 @@ class AppFixtures extends Fixture
             $group = new Group();
             $group->setName("Group $i");
             $manager->persist($group);
+            for ($i = 0; $i<5; $i++)
+            {
+                $user = new User();
+                $user->setGroups($group);
+                $user->setName("User name $i");
+                $user->setFirstName("User firstname $i");
+                $user->setLastName("user lastname $i");
+                $user->setBirthday(Carbon::now());
+                $user->setEmail("User $i @mail.ru");
+                $user->setPassword('123456');
+                $score = new Score();
+                $subject = new Subject();
+                $subject->setName("Subject $i");
+                $score->setSubject($subject);
+                $score->setUser($user);
+                $score->setScore($i);
+                $manager->persist($user);
+                $manager->persist($subject);
+                $manager->persist($score);
+            }
         }
-        for ($i = 0; $i<5; $i++)
-        {
-            $user = new User();
-            $user->setGroups($group);
-            $user->setName("User name $i");
-            $user->setFirstName("User firstname $i");
-            $user->setLastName("user lastname $i");
-            $user->setBirthday(Carbon::now());
-            $user->setEmail("User $i @mail.ru");
-            $score = new Score();
-            $subject = new Subject();
-            $subject->setName("Subject $i");
-            $score->setSubject($subject);
-            $score->setUser($user);
-            $score->setScore($i);
-            $manager->persist($user);
-            $manager->persist($subject);
-            $manager->persist($score);
-        }
+
 
         $manager->flush();
     }

@@ -19,10 +19,8 @@
 
     {% block links %}
         <div class="container">
-
-
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="#">Symfony <3</a>
+                <a class="navbar-brand" href="/user">Symfony <3</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +28,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ path('app_user_index') }}"> Users <span class="sr-only"></span></a>
                         </li>
@@ -40,6 +38,24 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_subject_index') }}">Subjects</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if app.user %}
+                            <li class="nav-item active">
+                               <a class="nav-link" href="{{ path('app_profile') }}"> {{ app.user.getFullName }}</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('app_logout') }}"> Logout <span
+                                            class="sr-only"></span></a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('app_login') }}"> Login <span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_register') }}">Register</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </nav>

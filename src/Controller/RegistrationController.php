@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Mail\RegistrationMail;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -18,11 +19,11 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
+    private RegistrationMail $emailRegistration;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(RegistrationMail $emailRegistration)
     {
-        $this->emailVerifier = $emailVerifier;
+        $this->emailRegistration = $emailRegistration;
     }
 
     #[Route('/register', name: 'app_register')]
@@ -43,15 +44,9 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
+            $userPassword = $form->get('plainPassword')->getData();
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('admin@study.com', 'Education bot'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
+            $this->emailRegistration->sendEmailRegistration($user, $userPassword);
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('app_user_index');
