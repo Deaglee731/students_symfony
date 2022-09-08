@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{# ... #}
+
+{% block body %}
+    <div class="container d-flex justify-content-center">
+
+        {% if error %}
+            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        <div class="card mt-5">
+            <div class="card-body">
+                <h5 class="card-title">Login</h5>
+                <form action="{{ path('app_login') }}" method="post">
+                    <div class="row">
+                        <label for="username">Email:</label>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}"/>
+
+                    </div>
+                    <div class="row">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="_password"/>
+                    </div>
+                    <input type="hidden" name="_target_path" value="/profile"/>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button type="submit">login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
