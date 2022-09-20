@@ -49,6 +49,7 @@ class UserController extends AbstractController
                 $dir = $this->getParameter('avatar_path');
                 $dirname = "$dir". "/" . $user->getId();
                 $avatar_name = $fileUploader->upload($avatar, $dirname);
+                $user->setPassword('123123');
                 $user->setAvatar($avatar_name);
             }
 
