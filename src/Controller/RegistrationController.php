@@ -49,8 +49,8 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
             $userPassword = $form->get('plainPassword')->getData();
             // generate a signed url and email it to the user
-            $this->emailRegistration->sendEmailRegistration($user, $userPassword);
-            $eventDispatcher->dispatch(new UserRegisterEvent($user));
+
+            $eventDispatcher->dispatch(new UserRegisterEvent($user, $userPassword));
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('app_user_index');
