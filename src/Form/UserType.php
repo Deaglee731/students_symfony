@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,6 +45,10 @@ class UserType extends AbstractType
             ->add('groups', EntityType::class, [
                 'class' => Group::class,
                 'choice_label' => 'name',
+                'required' => true,
+            ])
+            ->add('password', PasswordType::class, [
+                'label' => 'password',
                 'required' => true,
             ])
             ->add($builder->create('address', FormType::class)
