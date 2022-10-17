@@ -8,6 +8,10 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+    role_hierarchy:
+        ROLE_ADMIN: [ ROLE_ADMIN, ROLE_TEACHER ]
+        ROLE_TEACHER: [ ROLE_TEACHER, ROLE_STUDENT ]
+        ROLE_STUDENT: ROLE_STUDENT
     firewalls:
 #        secured_area:
 #            form_login:

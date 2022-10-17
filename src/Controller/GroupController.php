@@ -71,6 +71,8 @@ class GroupController extends AbstractController
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
+        $this->denyAccessUnlessGranted('edit', $group);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $groupRepository->add($group, true);
 
