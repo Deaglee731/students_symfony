@@ -3,12 +3,12 @@
 namespace App\Security;
 
 use App\Entity\Group;
-use App\Entity\Post;
+use App\Entity\Subject;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class GroupVoter extends Voter
+class SubjectVoter extends Voter
 {
 // эти строки были просто выдуманы: вы можете использовать что угодно
     const VIEW = 'view';
@@ -24,7 +24,7 @@ class GroupVoter extends Voter
         }
 
 // голосовать только по объектам Post внутри этого избирателя
-        if (!$subject instanceof Group) {
+        if (!$subject instanceof Subject) {
             return false;
         }
 
@@ -41,56 +41,64 @@ class GroupVoter extends Voter
         }
 
 // вы знаете, что $subject - это объект Post, благодаря поддержке
-        /** @var Group $group */
-        $group = $subject;
+        /** @var Subject $subject */
+        $subj = $subject;
 
         switch ($attribute) {
             case self::VIEW:
-                return $this->canView($group, $user);
+                return $this->canView($subj, $user);
             case self::EDIT:
-                return $this->canEdit($group, $user);
+                return $this->canEdit($subj, $user);
             case self::CREATE:
-                return $this->canCreate($group, $user);
+                return $this->canCreate($subj, $user);
             case self::DELETE:
-                return $this->canDelete($group, $user);
+                return $this->canDelete($subj, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(Group $group, User $user): bool
+    private function canView(Subject $subj, User $user): bool
     {
-        if ($this->canEdit($group, $user)) {
+        if ($this->canEdit($subj, $user)) {
             return true;
         }
 
-        if ($user->getRoles() == 'ROLE_STUDENT' && ($group->getId() == $user->getGroups()->getId())) {
+        if ($user->getRoles() == 'ROLE_STUDENT') {
             return true;
         }
 
         return false;
     }
 
-    private function canEdit(Group $group, User $user): bool
+    private function canEdit(Subject $subj, User $user): bool
     {
         if (in_array('ROLE_ADMIN',$user->getRoles())) {
             return true;
         }
 
-        if (in_array('ROLE_TEACHER',$user->getRoles()) && $group->getId() == $user->getGroups()->getId()) {
+        if (in_array('ROLE_TEACHER',$user->getRoles())) {
             return true;
         }
 
         return false;
     }
 
-    private function canCreate(Group $group, User $user)
+    private function canCreate(Subject $subj, User $user)
     {
-        return $user->getRoles() == 'ROLE_ADMIN';
+        if (in_array('ROLE_ADMIN',$user->getRoles())) {
+            return true;
+        }
+
+        if (in_array('ROLE_TEACHER',$user->getRoles())) {
+            return true;
+        }
+
+        return false;
     }
 
-    private function canDelete(Group $group, User $user)
+    private function canDelete(Subject $subj, User $user)
     {
-        return false;
+        return in_array('ROLE_ADMIN', $user->getRoles());
     }
 }
