@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Score{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+
+    <h1 class="d-flex justify-content-center">Create new Score for {{ user.name }}</h1>
+
+    {{ include('score/_form.html.twig') }}
+
+    <a href="{{ path('app_score_index', {'user' : user.id}) }}">back to list</a>
+    </div>
+{% endblock %}

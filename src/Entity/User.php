@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,8 +29,14 @@ class User
     #[ORM\Column(type: 'string', length: 25)]
     private $last_name;
 
-    #[ORM\Column(type: 'string', length: 40)]
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
     private $email;
+
+    #[ORM\Column(type: 'json')]
+    private $roles = [];
+
+    #[ORM\Column(type: 'string')]
+    private $password;
 
     #[ORM\Column(type: 'date')]
     private $birthday;
@@ -34,6 +47,43 @@ class User
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $avatar;
+
+    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: "user")]
+    private $subjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Score::class)]
+    private $scores;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private $address = [];
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
+
+    public const COLOR_GREEN = 'green';
+    public const COLOR_YELLOW = 'yellow';
+    public const COLOR_RED = 'red';
+
+    public function __construct()
+    {
+        $this->scores = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubjects()
+    {
+        return $this->subjects;
+    }
+
+    /**
+     * @param mixed $subjects
+     */
+    public function setSubjects($subjects): void
+    {
+        $this->subjects = $subjects;
+    }
 
     public function getId(): ?int
     {
@@ -124,8 +174,140 @@ class User
         return $this;
     }
 
+    public function getFullName()
+    {
+        return $this->getName() . " " . $this->getFirstName();
+    }
+
     public function __toString(): string
     {
-        return (string) $this->getGroups();
+        return (string)$this->getFullName();
+    }
+
+    /**
+     * @return Collection<int, Score>
+     */
+    public function getScores(): Collection
+    {
+        return $this->scores;
+    }
+
+    public function addScore(Score $score): self
+    {
+        if (!$this->scores->contains($score)) {
+            $this->scores[] = $score;
+            $score->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScore(Score $score): self
+    {
+        if ($this->scores->removeElement($score)) {
+            // set the owning side to null (unless already changed)
+            if ($score->getUser() === $this) {
+                $score->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getColor()
+    {
+        $scores = new ArrayCollection($this->getScores()->getValues());
+        $min = 100;
+
+        $scores->map(function ($value) use (&$min) {
+            if ($value->getScore() != null &&$value->getScore() <= $min) {
+                return $min = $value->getScore();
+            }
+        });
+
+        return ($min == 5 ? User::COLOR_GREEN : ($min == 4 ? User::COLOR_YELLOW : User::COLOR_RED));
+    }
+
+    public function getAddress(): ?array
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?array $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getFullAddress(): string
+    {
+        $city = $this->getAddress()['city'] ?? "null";
+        $street = $this->getAddress()['street'] ?? "null";
+        $home = $this->getAddress()['home'] ?? "null";
+
+        return " Город " . $city ."\n" . " Улица " . $street . " Дом ". $home;
+    }
+
+    /**
+     * @return string|null
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+    /**
+     * @return string[]
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

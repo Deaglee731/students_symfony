@@ -6,8 +6,12 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+.idea/
 /var/
 /vendor/
+.idea/php.xml
+symfony.lock
+composer.lock
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
