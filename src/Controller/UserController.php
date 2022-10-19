@@ -61,7 +61,10 @@ class UserController extends AbstractController
                 $dir = $this->getParameter('avatar_path');
                 $dirname = "$dir". "/" . $user->getId();
                 $avatar_name = $fileUploader->upload($avatar, $dirname);
-                $user->setAvatar($avatar_name);
+                $user->setAvatar('uploads/users/avatars/'.$user->getId() . "/" . $avatar_name);
+
+                $entityManager->persist($user);
+                $entityManager->flush();
             }
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);

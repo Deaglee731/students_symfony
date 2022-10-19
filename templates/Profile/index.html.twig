@@ -5,6 +5,13 @@
 {% block body %}
     <div class="container">
         <div class="card">
+            <img src=" {{ absolute_url(avatar) }}" class="rounded mx-auto d-block" alt="Avatar">
+            <form method="POST" enctype="multipart/form-data" action="{{ path('app_update_avatar') }}">
+                <div class="form mb-3">
+                    <input name="avatar" type="file" accept="image/*" class="form-control" id="avatar">
+                </div>
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </form>
             <div class="card-header">
                 <div class="row">
                     <div class="col">
