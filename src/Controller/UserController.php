@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Services\FileUploader;
+use App\Services\PdfService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -119,5 +120,17 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/students/export', name: 'app_user_export', methods: ['GET'])]
+    public function export(UserRepository $userRepository, PdfService $pdfService)
+    {
+        $users = $userRepository->findAll();
+
+        $html = $this->renderView('user/list.html.twig', [
+            'users' => $users
+        ]);
+
+        $pdfService->generatePDF($html, 'StudentList');
     }
 }
