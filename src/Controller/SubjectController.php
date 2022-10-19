@@ -25,6 +25,7 @@ class SubjectController extends AbstractController
     public function new(Request $request, SubjectRepository $subjectRepository): Response
     {
         $subject = new Subject();
+        $this->denyAccessUnlessGranted('create', $subject);
         $form = $this->createForm(SubjectType::class, $subject);
         $form->handleRequest($request);
 
@@ -53,7 +54,7 @@ class SubjectController extends AbstractController
     {
         $form = $this->createForm(SubjectType::class, $subject);
         $form->handleRequest($request);
-
+        $this->denyAccessUnlessGranted('edit', $subject);
         if ($form->isSubmitted() && $form->isValid()) {
             $subjectRepository->add($subject, true);
 
@@ -69,6 +70,7 @@ class SubjectController extends AbstractController
     #[Route('/{id}', name: 'app_subject_delete', methods: ['POST'])]
     public function delete(Request $request, Subject $subject, SubjectRepository $subjectRepository): Response
     {
+        $this->denyAccessUnlessGranted('delete', $subject);
         if ($this->isCsrfTokenValid('delete'.$subject->getId(), $request->request->get('_token'))) {
             $subjectRepository->remove($subject, true);
         }
