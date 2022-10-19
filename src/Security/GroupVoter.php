@@ -13,11 +13,13 @@ class GroupVoter extends Voter
 // эти строки были просто выдуманы: вы можете использовать что угодно
     const VIEW = 'view';
     const EDIT = 'edit';
+    const CREATE = 'create';
+    const DELETE = 'detele';
 
     protected function supports(string $attribute, $subject): bool
     {
 // если это не один из поддерживаемых атрибутов, возвращается false
-        if (!in_array($attribute, [self::VIEW, self::EDIT])) {
+        if (!in_array($attribute, [self::VIEW, self::EDIT, self::CREATE, self::DELETE])) {
             return false;
         }
 
@@ -47,6 +49,10 @@ class GroupVoter extends Voter
                 return $this->canView($group, $user);
             case self::EDIT:
                 return $this->canEdit($group, $user);
+            case self::CREATE:
+                return $this->canCreate($group, $user);
+            case self::DELETE:
+                return $this->canDelete($group, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -58,23 +64,33 @@ class GroupVoter extends Voter
             return true;
         }
 
+        if ($user->getRoles() == 'ROLE_STUDENT' && ($group->getId() == $user->getGroups()->getId())) {
+            return true;
+        }
+
         return false;
     }
 
     private function canEdit(Group $group, User $user): bool
     {
-        if ($user->getRoles() == 'ROLE_ADMIN') {
+        if (in_array('ROLE_ADMIN',$user->getRoles())) {
             return true;
         }
 
-        if ($user->getRoles() == 'ROLE_TEACHER' && $group->getId() == $user->getGroups()->getId()) {
+        if (in_array('ROLE_TEACHER',$user->getRoles()) && $group->getId() == $user->getGroups()->getId()) {
             return true;
         }
 
-        if ($user->getRoles() == 'ROLE_STUDENT') {
-            return false;
-        }
+        return false;
+    }
 
-        return $user->getGroups() === $group;
+    private function canCreate(Group $group, User $user)
+    {
+        return $user->getRoles() == 'ROLE_ADMIN';
+    }
+
+    private function canDelete(Group $group, User $user)
+    {
+        return false;
     }
 }

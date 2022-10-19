@@ -2,11 +2,14 @@
 
 namespace App\Form;
 
+use App\Enums\RoleDictionary;
 use App\Entity\Group;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -61,6 +64,15 @@ class RegistrationFormType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Image(['maxSize' => '1024k'])
+                ],
+            ])
+            ->add('roles', CollectionType::class, [
+                'entry_type' => ChoiceType::class,
+                'entry_options' => [
+                    'label' => 'Роль',
+                    'choices' => [
+                        RoleDictionary::getRoles()
+                    ],
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
