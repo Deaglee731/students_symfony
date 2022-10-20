@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\ScoreRepository;
 use App\Repository\UserRepository;
 use App\Services\FileUploader;
 use App\Services\PdfService;
@@ -113,9 +114,13 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, UserRepository $userRepository): Response
+    public function delete(Request $request, User $user, UserRepository $userRepository, ScoreRepository $scoreRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            foreach ($scoreRepository->findByUser($user) as $score) {
+                $scoreRepository->remove($score);
+            }
+
             $userRepository->remove($user, true);
         }
 
@@ -132,5 +137,16 @@ class UserController extends AbstractController
         ]);
 
         $pdfService->generatePDF($html, 'StudentList');
+    }
+
+    #[Route('/students/{id}/restore', name: 'app_user_restore', methods: ['GET'])]
+    public function restore(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository)
+    {
+        $entityManager->getFilters()->disable('softdeleteable');
+        $user = $userRepository->findOneBy(['id' => $request->get('id')]);
+        $user->setDeletedAt(null);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 }
