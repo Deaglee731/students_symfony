@@ -35,7 +35,9 @@
                             <div class="col">
                                 <button class="btn btn-success"> Filter </button>
                                 <a href="{{ path('app_user_index') }}" class="btn btn-warning"> Remove filters</a>
+                                {% if is_granted('ROLE_TEACHER') %}
                                 <a href="{{ path('app_user_export') }}" class="btn btn-info"> Export list</a>
+                                {% endif %}
                             </div>
                         </div>
                     </form>
