@@ -3,7 +3,7 @@
 {% block title %}User index{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" xmlns="http://www.w3.org/1999/html">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -22,21 +22,29 @@
                             </div>
                             <div class="col">
                                 <label for="first_name_filter"> first_name </label>
-                                <input id="first_name_filter" type="text" name="first_name" value="{{ request.query.get('first_name') }}">
+                                <input id="first_name_filter" type="text" name="first_name"
+                                       value="{{ request.query.get('first_name') }}">
                             </div>
                             <div class="col">
                                 <label for="last_name_filter"> last_name </label>
-                                <input id="last_name_filter" type="text" name="last_name" value="{{ request.query.get('last_name') }}">
+                                <input id="last_name_filter" type="text" name="last_name"
+                                       value="{{ request.query.get('last_name') }}">
                             </div>
                             <div class="col">
                                 <label for="birhtday_filter"> birthday </label>
-                                <input id="birhtday_filter" type="date" name="birthday" value="{{ request.query.get('birthday') }}">
+                                <input id="birhtday_filter" type="date" name="birthday"
+                                       value="{{ request.query.get('birthday') }}">
                             </div>
                             <div class="col">
-                                <button class="btn btn-success"> Filter </button>
+                                {% if is_granted('ROLE_TEACHER') %}
+                                <input type="checkbox" name="soft_delete"
+                                       value="1" {% if request.query.get('soft_delete') %} checked {% endif %}>
+                                Удаленные <br>
+                                {% endif %}
+                                <button class="btn btn-success"> Filter</button>
                                 <a href="{{ path('app_user_index') }}" class="btn btn-warning"> Remove filters</a>
                                 {% if is_granted('ROLE_TEACHER') %}
-                                <a href="{{ path('app_user_export') }}" class="btn btn-info"> Export list</a>
+                                    <a href="{{ path('app_user_export') }}" class="btn btn-info"> Export list</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -69,7 +77,12 @@
                                        href="{{ path('app_user_show', {'id': user.id}) }}">Show</a>
                                     <a class="btn btn-outline-secondary"
                                        href="{{ path('app_user_edit', {'id': user.id}) }}">Edit</a>
-                                    {{ include('user/_delete_form.html.twig') }}
+                                    {% if user.isDeleted() %}
+                                        <a class="btn btn-outline-danger"
+                                           href="{{ path('app_user_restore', {'id': user.id}) }}">Restore</a>
+                                    {% else %}
+                                        {{ include('user/_delete_form.html.twig') }}
+                                    {% endif %}
                                     <a class="btn btn-outline-info"
                                        href="{{ path('app_score_index', {'user': user.id}) }}">
                                         Show score

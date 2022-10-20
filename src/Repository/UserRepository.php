@@ -19,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public const PAGINATOR_PER_PAGE = 2;
+    public const PAGINATOR_PER_PAGE = 10;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -156,6 +156,10 @@ class UserRepository extends ServiceEntityRepository
         if ($request->query->has('birthday')) {
             $result->andWhere("u.birthday LIKE :birthday")
                 ->setParameter('birthday', "%" . $request->query->get('birthday') . "%");
+        }
+
+        if ($request->get('soft_delete')) {
+            $result->getEntityManager()->getFilters()->disable('softdeleteable');
         }
 
         return $result;
