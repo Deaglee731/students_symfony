@@ -153,8 +153,10 @@ class UserController extends AbstractController
     #[Route('/students/{id}/forceDelete', name: 'app_user_force_delete', methods: ['GET'])]
     public function forceDelete(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, ScoreRepository $scoreRepository)
     {
+
         $entityManager->getFilters()->disable('softdeleteable');
         $user = $userRepository->findOneBy(['id' => $request->get('id')]);
+        $this->denyAccessUnlessGranted('force_delete', $user);
 
         if ($user->isDeleted()) {
             foreach ($scoreRepository->findByUser($user) as $score) {
