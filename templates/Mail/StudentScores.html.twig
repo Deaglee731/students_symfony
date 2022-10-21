@@ -1,0 +1,14 @@
+<h1>Hi! {{ user.getName() }} </h1>
+<table class="table table-striped table-bordered table align-middle table-sm">
+    <h4> {{ user.getName() }} , Ваши оценки по предметам </h4>
+    <tbody style="text-align: center;">
+    <th>Предмет</th>
+    <th>Оценка</th>
+    {% for score in user.getScores() %}
+    <tr>
+        <th scope="row"> {{ score.getSubject() }} </th>
+        <th>{{ score.getScore() }}</th>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
