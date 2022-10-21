@@ -149,4 +149,24 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/students/{id}/forceDelete', name: 'app_user_force_delete', methods: ['GET'])]
+    public function forceDelete(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, ScoreRepository $scoreRepository)
+    {
+        $entityManager->getFilters()->disable('softdeleteable');
+        $user = $userRepository->findOneBy(['id' => $request->get('id')]);
+
+        if ($user->isDeleted()) {
+            foreach ($scoreRepository->findByUser($user) as $score) {
+                $scoreRepository->remove($score);
+            }
+        }
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
